@@ -9,14 +9,14 @@ export function AppLayout() {
   const [mobileMenu, setMobileMenu] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-surface-muted">
+    <div className="flex min-h-screen overflow-x-clip bg-surface-muted">
       <Sidebar />
       <MobileSidebar open={mobileMenu} onClose={() => setMobileMenu(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Header onMenu={() => setMobileMenu(true)} />
-        <main className="flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8">
-          <div className="mx-auto w-full max-w-[1400px] animate-fade-in">
+        <main className="min-w-0 flex-1 overflow-x-clip px-4 pb-24 pt-5 sm:px-6 lg:pb-8">
+          <div className="mx-auto w-full max-w-[1400px] min-w-0 animate-fade-in">
             <Outlet />
           </div>
         </main>

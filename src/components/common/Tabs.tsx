@@ -15,7 +15,7 @@ interface TabsProps {
 
 export function Tabs({ tabs, active, onChange, className }: TabsProps) {
   return (
-    <div className={cn("flex gap-1 overflow-x-auto scrollbar-none", className)}>
+    <div className={cn("flex max-w-full gap-1 overflow-x-auto scrollbar-none", className)}>
       {tabs.map((t) => {
         const isActive = t.id === active;
         return (

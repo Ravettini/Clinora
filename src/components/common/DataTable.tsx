@@ -48,11 +48,12 @@ export function DataTable<T>({
       {/* Desktop / tablet table */}
       <div
         className={cn(
-          "card overflow-hidden",
-          renderMobileCard ? "hidden md:block" : "block overflow-x-auto",
+          "card max-w-full overflow-hidden",
+          renderMobileCard ? "hidden md:block" : "block",
         )}
       >
-        <table className="w-full min-w-full text-sm">
+        <div className="max-w-full overflow-x-auto">
+          <table className="w-max min-w-full text-sm">
           <thead>
             <tr className="border-b border-ink-900/5 bg-surface-muted/60">
               {columns.map((col) => (
@@ -93,7 +94,8 @@ export function DataTable<T>({
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
 
       {/* Mobile cards */}

@@ -58,7 +58,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
   return (
     <header
       ref={containerRef}
-      className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-ink-900/5 bg-surface/90 px-4 backdrop-blur sm:gap-3 sm:px-6"
+      className="sticky top-0 z-30 flex h-16 min-w-0 items-center gap-2 overflow-x-clip border-b border-ink-900/5 bg-surface/90 px-4 backdrop-blur sm:gap-3 sm:px-6"
     >
       <button
         onClick={onMenu}
@@ -68,7 +68,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
       </button>
 
       {/* Global search */}
-      <div className="relative flex-1 max-w-md">
+      <div className="relative min-w-0 flex-1 sm:max-w-md">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
         <input
           value={search}
@@ -78,7 +78,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
           }}
           onFocus={() => setResultsOpen(true)}
           placeholder="Buscar paciente, DNI…"
-          className="input pl-9"
+          className="input h-11 pl-9"
         />
         {resultsOpen && results.length > 0 && (
           <div className="absolute left-0 right-0 top-12 z-40 overflow-hidden rounded-xl border border-ink-900/5 bg-white shadow-pop animate-fade-in">
@@ -100,10 +100,8 @@ export function Header({ onMenu }: { onMenu: () => void }) {
         )}
       </div>
 
-      <div className="flex-1" />
-
       {/* FX indicator */}
-      <div className="hidden items-center gap-1.5 rounded-xl bg-positive-50 px-3 py-1.5 text-sm font-semibold text-positive-700 sm:flex">
+      <div className="ml-auto hidden items-center gap-1.5 rounded-xl bg-positive-50 px-3 py-1.5 text-sm font-semibold text-positive-700 sm:flex">
         <DollarSign className="h-4 w-4" />
         <span>1 USD = ${formatNumber(fxRate)}</span>
       </div>
@@ -115,7 +113,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
             setBranchOpen((v) => !v);
             setBellOpen(false);
           }}
-          className="flex items-center gap-2 rounded-xl border border-ink-900/10 bg-white px-3 py-2 text-sm font-semibold text-ink-700 transition hover:bg-surface-subtle"
+          className="flex shrink-0 items-center gap-2 rounded-xl border border-ink-900/10 bg-white px-3 py-2 text-sm font-semibold text-ink-700 transition hover:bg-surface-subtle"
         >
           <Building2 className="h-4 w-4 text-brand-500" />
           <span className="hidden sm:inline">{branch.name}</span>
@@ -147,7 +145,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
             setBellOpen((v) => !v);
             setBranchOpen(false);
           }}
-          className="relative rounded-xl p-2 text-ink-500 transition hover:bg-surface-subtle"
+          className="relative shrink-0 rounded-xl p-2 text-ink-500 transition hover:bg-surface-subtle"
         >
           <Bell className="h-5 w-5" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-danger-500 ring-2 ring-white" />
@@ -183,8 +181,8 @@ export function Header({ onMenu }: { onMenu: () => void }) {
       </div>
 
       {/* User */}
-      <div className="flex items-center gap-2.5 pl-1">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-sm font-bold text-white">
+      <div className="flex shrink-0 items-center gap-2.5 pl-1">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-sm font-bold text-white">
           VR
         </div>
         <div className="hidden leading-tight md:block">

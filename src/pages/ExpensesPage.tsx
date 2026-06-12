@@ -45,7 +45,7 @@ export function ExpensesPage() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Egresos del mes" value={formatCurrency(monthTotal)} delta={variation} accent="danger" />
         <MetricCard label="Variación mensual" value={`${variation > 0 ? "+" : ""}${variation}%`} accent="warning" />
         <MetricCard label="Categoría principal" value={topCategory} accent="brand" />

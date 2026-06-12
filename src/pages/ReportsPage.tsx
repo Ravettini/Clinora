@@ -81,21 +81,21 @@ export function ReportsPage() {
             key={r.id}
             onClick={() => setActive(r.id)}
             className={cn(
-              "card flex items-center gap-3 p-4 text-left transition hover:shadow-pop",
+              "card flex min-w-0 items-center gap-3 p-4 text-left transition hover:shadow-pop",
               active === r.id && "ring-2 ring-brand-400",
             )}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
               <r.icon className="h-5 w-5" />
             </span>
-            <span className="text-sm font-semibold text-ink-900">{r.title}</span>
+            <span className="min-w-0 break-words text-sm font-semibold text-ink-900 [overflow-wrap:anywhere]">{r.title}</span>
           </button>
         ))}
       </div>
 
       {active === "ebitda" && (
         <>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label="EBITDA Junio" value={formatCurrency(last.ebitda)} delta={formatPercent(((last.ebitda - prev.ebitda) / prev.ebitda) * 100)} />
             <Kpi label="Margen EBITDA" value={`${ebitdaMargin(last.ebitda, last.sales)}%`} />
             <Kpi label="Margen bruto" value={`${ebitdaMargin(last.grossMargin, last.sales)}%`} />
@@ -196,9 +196,9 @@ export function ReportsPage() {
 
 function Kpi({ label, value, delta }: { label: string; value: string; delta?: string }) {
   return (
-    <div className="card p-4">
+    <div className="card min-w-0 overflow-hidden p-4">
       <p className="text-xs font-medium text-ink-400">{label}</p>
-      <p className="mt-1 text-xl font-bold text-ink-900">{value}</p>
+      <p className="mt-1 break-words text-xl font-bold leading-tight text-ink-900 [overflow-wrap:anywhere]">{value}</p>
       {delta && <p className="mt-0.5 text-xs font-semibold text-positive-600">{delta}</p>}
     </div>
   );

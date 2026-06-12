@@ -140,13 +140,13 @@ export function DashboardPage() {
 
       {/* KPIs */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {Array.from({ length: 10 }).map((_, i) => (
             <CardSkeleton key={i} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <MetricCard label="Facturación del mes" value={formatCurrency(d.kpis.revenueMonth)} icon={DollarSign} delta={d.deltas.revenue} accent="brand" />
           <MetricCard label="Facturación ARS" value={formatCurrency(d.kpis.revenueArs)} icon={Banknote} delta={d.deltas.revenue} accent="brand" />
           <MetricCard label="Equivalente USD" value={`USD ${formatNumber(d.kpis.revenueUsd)}`} icon={DollarSign} deltaLabel="al tipo de cambio demo" delta={0} accent="positive" />

@@ -4,13 +4,20 @@
 
 @layer base {
   html {
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-surface-muted text-ink-900 font-sans;
+    overflow-x: clip;
+  }
+  #root {
+    min-height: 100vh;
+    overflow-x: clip;
   }
   * {
+    box-sizing: border-box;
     scrollbar-width: thin;
     scrollbar-color: #d6cfe6 transparent;
   }
