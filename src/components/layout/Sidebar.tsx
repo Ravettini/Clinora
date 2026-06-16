@@ -20,8 +20,10 @@ function Brand() {
 }
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
+  const { openNewIncome } = useUI();
+
   return (
-    <nav className="mt-6 flex-1 space-y-0.5 px-3">
+    <nav className="mt-6 space-y-0.5 px-3 pb-5">
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -47,26 +49,26 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
           )}
         </NavLink>
       ))}
+      <button
+        onClick={() => {
+          openNewIncome();
+          onNavigate?.();
+        }}
+        className="btn-primary mt-3 w-full"
+      >
+        <Plus className="h-4 w-4" /> Nuevo ingreso
+      </button>
     </nav>
   );
 }
 
 export function Sidebar() {
-  const { openNewIncome } = useUI();
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-ink-900/5 bg-surface lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-ink-900/5 bg-surface lg:flex">
       <div className="pt-5">
         <Brand />
       </div>
       <NavList />
-      <div className="p-3">
-        <button
-          onClick={() => openNewIncome()}
-          className="btn-primary w-full"
-        >
-          <Plus className="h-4 w-4" /> Nuevo ingreso
-        </button>
-      </div>
     </aside>
   );
 }
