@@ -3,6 +3,7 @@ import { Plus, X } from "lucide-react";
 import { navItems } from "./nav";
 import { cn } from "@/utils/cn";
 import { useUI } from "@/store/UIContext";
+import { tenant } from "@/auth/tenants";
 
 function Brand() {
   return (
@@ -11,8 +12,8 @@ function Brand() {
         <Plus className="h-5 w-5" strokeWidth={2.6} />
       </div>
       <div className="leading-tight">
-        <p className="text-base font-extrabold tracking-tight text-ink-900">CLINORA</p>
-        <p className="text-[10px] font-medium text-ink-400">Gestión inteligente</p>
+        <p className="text-base font-extrabold tracking-tight text-ink-900">{tenant.brand.name}</p>
+        <p className="text-[10px] font-medium text-ink-400">{tenant.brand.tagline}</p>
       </div>
     </div>
   );

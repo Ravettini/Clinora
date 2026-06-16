@@ -8,12 +8,14 @@ import { Select } from "@/components/common/Controls";
 import { useToast } from "@/store/ToastContext";
 import { settlements, societyContributions, settlementPeriodLabel } from "@/data/mockSettlements";
 import { downloadCsv } from "@/utils/csv";
+import { paymentMethodLabels } from "@/utils/labels";
+import { terms, tenant } from "@/auth/tenants";
 import { formatCurrency } from "@/utils/format";
 import type { Settlement } from "@/types";
 
 const tabs = [
-  { id: "secundario", label: "Profesionales secundarios" },
-  { id: "principal", label: "Profesionales principales" },
+  { id: "secundario", label: `${terms.professionals} secundarios` },
+  { id: "principal", label: `${terms.professionals} principales` },
   { id: "historial", label: "Historial" },
 ];
 
@@ -37,7 +39,7 @@ export function SettlementsPage() {
 
   const exportCsv = (s: Settlement) => {
     const rows: (string | number)[][] = [
-      ["Fecha", "Paciente", "Tratamiento", "Precio", "Comisión"],
+      ["Fecha", terms.patient, terms.treatment, "Precio", "Comisión"],
       ...s.lines.map((l) => [l.date, l.patientName, l.treatmentName, l.treatmentPrice, l.commission]),
     ];
     downloadCsv(`liquidacion-${s.doctorName.replace(/\s/g, "-")}.csv`, rows);
@@ -75,7 +77,7 @@ export function SettlementsPage() {
 
       {tab !== "historial" && filtered.length > 0 && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard label="Tratamientos" value={String(filtered.reduce((s, x) => s + x.treatmentsCount, 0))} accent="brand" />
+          <MetricCard label={terms.treatments} value={String(filtered.reduce((s, x) => s + x.treatmentsCount, 0))} accent="brand" />
           <MetricCard label="Facturación generada" value={formatCurrency(filtered.reduce((s, x) => s + x.generatedRevenue, 0))} accent="brand" />
           <MetricCard label="Comisión total" value={formatCurrency(filtered.reduce((s, x) => s + x.totalCommission, 0))} accent="warning" />
           <MetricCard label="Saldo pendiente" value={formatCurrency(filtered.reduce((s, x) => s + x.pending, 0))} accent="danger" />
@@ -86,9 +88,9 @@ export function SettlementsPage() {
         <div className="lg:col-span-2">
           <DataTable
             columns={[
-              { key: "doctor", header: "Profesional", render: (s: Settlement) => <span className="font-semibold">{s.doctorName}</span> },
+              { key: "doctor", header: terms.professional, render: (s: Settlement) => <span className="font-semibold">{s.doctorName}</span> },
               { key: "period", header: "Período", render: (s: Settlement) => settlementPeriodLabel(s) },
-              { key: "count", header: "Tratamientos", align: "center", render: (s: Settlement) => s.treatmentsCount },
+              { key: "count", header: terms.treatments, align: "center", render: (s: Settlement) => s.treatmentsCount },
               { key: "commission", header: "Comisión", align: "right", render: (s: Settlement) => formatCurrency(s.totalCommission) },
               { key: "pending", header: "Pendiente", align: "right", render: (s: Settlement) => formatCurrency(s.pending) },
               {
@@ -211,13 +213,17 @@ export function SettlementsPage() {
 
       {tab === "principal" && (
         <div className="card p-5">
-          <h3 className="mb-4 font-semibold text-ink-900">Aporte de cada socia a la sociedad</h3>
+          <h3 className="mb-4 font-semibold text-ink-900">
+            {tenant.id === "libreria"
+              ? "Aporte de cada vendedor al negocio"
+              : "Aporte de cada socia a la sociedad"}
+          </h3>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {societyContributions.map((c) => (
               <div key={c.doctorId} className="rounded-xl bg-surface-muted p-4">
                 <p className="text-sm font-semibold text-ink-900">{c.name}</p>
                 <div className="mt-2 space-y-1 text-xs text-ink-500">
-                  <p>Transferencia clínica: {formatCurrency(c.toClinic)}</p>
+                  <p>{paymentMethodLabels.transferencia_clinica}: {formatCurrency(c.toClinic)}</p>
                   <p>Tarjeta: {formatCurrency(c.toCard)}</p>
                   <p>Efectivo: {formatCurrency(c.toCash)}</p>
                 </div>

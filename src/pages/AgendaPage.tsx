@@ -28,15 +28,22 @@ import { TODAY } from "@/data/mockAppointments";
 import { getPatient } from "@/data/mockPatients";
 import { getTreatment } from "@/data/mockTreatments";
 import { getDoctor } from "@/data/mockDoctors";
+import { appointmentStatusLabels } from "@/utils/labels";
+import { pageTitle, terms, tenant } from "@/auth/tenants";
 import { formatCurrency, formatDateLong } from "@/utils/format";
 import { cn } from "@/utils/cn";
 import type { Appointment, AppointmentStatus } from "@/types";
 
+const isLibreria = tenant.id === "libreria";
+const startedToast = isLibreria ? "Preparación iniciada" : "Tratamiento iniciado";
+const finishedToast = isLibreria ? "Pedido preparado" : "Tratamiento finalizado";
+const startActionLabel = isLibreria ? "Preparar pedido" : "Iniciar atención";
+
 const tabs = [
   { id: "todos", label: "Todos" },
   { id: "esperando", label: "Esperando" },
-  { id: "en_tratamiento", label: "En tratamiento" },
-  { id: "pendiente_pago", label: "Pendiente de pago" },
+  { id: "en_tratamiento", label: appointmentStatusLabels.en_tratamiento },
+  { id: "pendiente_pago", label: appointmentStatusLabels.pendiente_pago },
   { id: "finalizado", label: "Finalizados" },
 ];
 
@@ -85,7 +92,7 @@ export function AgendaPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Agenda operativa"
+        title={pageTitle("agenda", "Agenda operativa")}
         subtitle={formatDateLong(TODAY)}
         actions={
           <button className="btn-primary" onClick={() => openNewIncome()}>
@@ -96,12 +103,12 @@ export function AgendaPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <StatPill icon={CalendarClock} label="Turnos" value={stats.turnos} tone="brand" />
+        <StatPill icon={CalendarClock} label={terms.appointments} value={stats.turnos} tone="brand" />
         <StatPill icon={Hourglass} label="En espera" value={stats.esperando} tone="info" />
         <StatPill icon={Activity} label="En curso" value={stats.enCurso} tone="warning" />
         <StatPill icon={Wallet} label="Pagos pendientes" value={stats.pendientes} tone="danger" />
         <StatPill icon={CheckCircle2} label="Finalizados" value={stats.finalizados} tone="positive" />
-        <StatPill icon={Stethoscope} label="Profesionales" value={new Set(today.map((a) => a.primaryDoctorId)).size} tone="neutral" />
+        <StatPill icon={Stethoscope} label={terms.professionals} value={new Set(today.map((a) => a.primaryDoctorId)).size} tone="neutral" />
       </div>
 
       <Tabs
@@ -114,8 +121,8 @@ export function AgendaPage() {
         <div className="card">
           <EmptyState
             icon={CalendarClock}
-            title="Sin turnos en esta vista"
-            description="No hay atenciones con este estado para la fecha y sucursal seleccionadas."
+            title={`Sin ${terms.appointments.toLowerCase()} en esta vista`}
+            description="No hay registros con este estado para la fecha y sucursal seleccionadas."
           />
         </div>
       ) : (
@@ -154,16 +161,16 @@ export function AgendaPage() {
                       appointment={a}
                       onStart={() => {
                         startTreatment(a.id);
-                        toast("info", "Tratamiento iniciado", patient?.fullName);
+                        toast("info", startedToast, patient?.fullName);
                       }}
                       onFinish={() => {
                         finishTreatment(a.id);
-                        toast("warning", "Tratamiento finalizado", "El pago quedó pendiente");
+                        toast("warning", finishedToast, "El pago quedó pendiente");
                       }}
                       onPay={() => setPayFor(a)}
                       onView={() => patient && navigate(`/pacientes/${patient.id}`)}
                       onCancel={() => setCancelId(a.id)}
-                      onReschedule={() => toast("info", "Reprogramar turno", "Acción demostrativa")}
+                      onReschedule={() => toast("info", `Reprogramar ${terms.appointment.toLowerCase()}`, "Acción demostrativa")}
                       menuOpen={menuId === a.id}
                       onToggleMenu={() => setMenuId(menuId === a.id ? null : a.id)}
                     />
@@ -178,14 +185,14 @@ export function AgendaPage() {
       <PaymentModal appointment={payFor} onClose={() => setPayFor(null)} />
       <ConfirmDialog
         open={!!cancelId}
-        title="Cancelar turno"
-        description="¿Confirmás la cancelación de este turno? Esta acción es demostrativa."
-        confirmLabel="Cancelar turno"
+        title={`Cancelar ${terms.appointment.toLowerCase()}`}
+        description={`¿Confirmás la cancelación? Esta acción es demostrativa.`}
+        confirmLabel={`Cancelar ${terms.appointment.toLowerCase()}`}
         tone="danger"
         onConfirm={() => {
           if (cancelId) {
             updateAppointmentStatus(cancelId, "cancelado");
-            toast("info", "Turno cancelado");
+            toast("info", `${terms.appointment} cancelada`);
           }
         }}
         onClose={() => setCancelId(null)}
@@ -248,9 +255,9 @@ function AgendaActions({
   onToggleMenu: () => void;
 }) {
   const primaryAction: Record<AppointmentStatus, { label: string; icon: typeof Play; fn: () => void } | null> = {
-    confirmado: { label: "Iniciar atención", icon: Play, fn: onStart },
-    programado: { label: "Iniciar atención", icon: Play, fn: onStart },
-    presente: { label: "Iniciar atención", icon: Play, fn: onStart },
+    confirmado: { label: startActionLabel, icon: Play, fn: onStart },
+    programado: { label: startActionLabel, icon: Play, fn: onStart },
+    presente: { label: startActionLabel, icon: Play, fn: onStart },
     en_tratamiento: { label: "Finalizar", icon: CheckCircle2, fn: onFinish },
     pendiente_pago: { label: "Registrar pago", icon: CreditCard, fn: onPay },
     finalizado: null,

@@ -2,14 +2,15 @@ import { NavLink } from "react-router-dom";
 import { LayoutDashboard, CalendarDays, Plus, Users, Menu } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useUI } from "@/store/UIContext";
+import { navLabel } from "@/auth/tenants";
 
 const items = [
-  { to: "/", label: "Inicio", icon: LayoutDashboard, end: true },
-  { to: "/agenda", label: "Agenda", icon: CalendarDays },
+  { to: "/", label: navLabel("/", "Inicio"), icon: LayoutDashboard, end: true },
+  { to: "/agenda", label: navLabel("/agenda", "Agenda"), icon: CalendarDays },
 ];
 
 const items2 = [
-  { to: "/pacientes", label: "Pacientes", icon: Users },
+  { to: "/pacientes", label: navLabel("/pacientes", "Pacientes"), icon: Users },
 ];
 
 export function MobileNavigation({ onMore }: { onMore: () => void }) {

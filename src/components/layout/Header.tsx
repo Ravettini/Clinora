@@ -8,22 +8,22 @@ import {
   DollarSign,
   Building2,
   Check,
+  LogOut,
 } from "lucide-react";
 import { useApp } from "@/store/AppContext";
+import { useAuth } from "@/auth/AuthContext";
+import { tenant } from "@/auth/tenants";
 import { branches } from "@/data/mockBranches";
 import { patients as allPatients } from "@/data/mockPatients";
 import { formatNumber } from "@/utils/format";
 import { cn } from "@/utils/cn";
 import type { BranchId } from "@/types";
 
-const notifications = [
-  { id: 1, title: "Stock crítico", detail: "Toxina botulínica 100 U bajo el mínimo", tone: "danger" },
-  { id: 2, title: "Pago pendiente", detail: "Lucía Fernández — Surcos nasogenianos", tone: "warning" },
-  { id: 3, title: "Liquidación lista", detail: "1ª quincena de Junio generada", tone: "info" },
-];
+const notifications = tenant.notifications;
 
 export function Header({ onMenu }: { onMenu: () => void }) {
   const { branchId, setBranchId, fxRate } = useApp();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [branchOpen, setBranchOpen] = useState(false);
@@ -77,7 +77,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
             setResultsOpen(true);
           }}
           onFocus={() => setResultsOpen(true)}
-          placeholder="Buscar paciente, DNI…"
+          placeholder={tenant.searchPlaceholder}
           className="input h-11 pl-9"
         />
         {resultsOpen && results.length > 0 && (
@@ -183,12 +183,19 @@ export function Header({ onMenu }: { onMenu: () => void }) {
       {/* User */}
       <div className="flex shrink-0 items-center gap-2.5 pl-1">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-sm font-bold text-white">
-          VR
+          {tenant.user.initials}
         </div>
         <div className="hidden leading-tight md:block">
-          <p className="text-sm font-semibold text-ink-900">Dra. Valentina Ruiz</p>
-          <p className="text-xs text-ink-400">Administradora</p>
+          <p className="text-sm font-semibold text-ink-900">{tenant.user.name}</p>
+          <p className="text-xs text-ink-400">{tenant.user.role}</p>
         </div>
+        <button
+          onClick={logout}
+          title="Cerrar sesión"
+          className="ml-1 rounded-xl p-2 text-ink-500 transition hover:bg-surface-subtle hover:text-danger-600"
+        >
+          <LogOut className="h-5 w-5" />
+        </button>
       </div>
     </header>
   );

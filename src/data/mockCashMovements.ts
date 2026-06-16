@@ -6,9 +6,10 @@ import { getTreatment } from "./mockTreatments";
 import { getCategory } from "./mockCategories";
 import { expenses } from "./mockExpenses";
 import { expenseCategoryLabels } from "@/utils/labels";
+import { content } from "./content";
 import { createRng, intBetween, pick } from "./seededRandom";
 
-const users = ["Recepción Palermo", "Recepción Belgrano", "Dra. Valentina Ruiz"];
+const users = content.cashUsers;
 
 const incomeMovements: CashMovement[] = appointments
   .filter((a) => a.status === "finalizado")

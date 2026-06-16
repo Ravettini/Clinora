@@ -9,6 +9,7 @@ import { getTreatment } from "@/data/mockTreatments";
 import { getDoctor } from "@/data/mockDoctors";
 import { getInventoryItem } from "@/data/mockInventory";
 import { paymentMethodLabels } from "@/utils/labels";
+import { terms } from "@/auth/tenants";
 import { formatCurrency, formatNumber } from "@/utils/format";
 import { cn } from "@/utils/cn";
 import type { Appointment, PaymentMethodType, Currency } from "@/types";
@@ -140,9 +141,9 @@ export function PaymentModal({
           {/* Summary */}
           <div className="grid gap-3 rounded-xl bg-surface-muted p-4 sm:grid-cols-3">
             <Info label="Total a cobrar" value={formatCurrency(total)} strong />
-            <Info label="Profesional principal" value={getDoctor(appointment.primaryDoctorId)?.fullName ?? "—"} />
+            <Info label={`${terms.professional} principal`} value={getDoctor(appointment.primaryDoctorId)?.fullName ?? "—"} />
             <Info
-              label="Profesional secundario"
+              label={`${terms.professional} secundario`}
               value={appointment.secondaryDoctorId ? getDoctor(appointment.secondaryDoctorId)?.fullName ?? "—" : "—"}
             />
             <Info label="Duración" value={`${appointment.realDurationMin ?? treatment.durationMin} min`} />
@@ -247,7 +248,7 @@ export function PaymentModal({
               checked={hasDebt}
               onChange={(e) => setHasDebt(e.target.checked)}
             />
-            El paciente quedó debiendo
+            El {terms.patient.toLowerCase()} quedó debiendo
           </label>
           {hasDebt && (
             <div className="grid grid-cols-1 gap-3 rounded-xl bg-danger-50/60 p-3 sm:grid-cols-3">
@@ -281,7 +282,7 @@ export function PaymentModal({
                   checked={consumesShown}
                   onChange={(e) => setConsumesShown(e.target.checked)}
                 />
-                El tratamiento consume insumos
+                El {terms.treatment.toLowerCase()} consume insumos
               </label>
               {consumesShown && (
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -371,8 +372,8 @@ function ReceiptView({
           </div>
         </div>
         <div className="space-y-1.5 py-3 text-sm">
-          <Row label="Paciente" value={patient?.fullName ?? "—"} />
-          <Row label="Tratamiento" value={treatment.name} />
+          <Row label={terms.patient} value={patient?.fullName ?? "—"} />
+          <Row label={terms.treatment} value={treatment.name} />
           <Row label="Fecha" value="11/06/2026" />
         </div>
         <div className="space-y-1.5 border-t border-ink-900/10 py-3 text-sm">

@@ -11,8 +11,11 @@ import { getPatient } from "@/data/mockPatients";
 import { getTreatment } from "@/data/mockTreatments";
 import { getDoctor } from "@/data/mockDoctors";
 import { getCategory, categories } from "@/data/mockCategories";
-import { paymentMethodLabels } from "@/utils/labels";
+import { paymentMethodLabels, appointmentStatusLabels } from "@/utils/labels";
+import { pageTitle, terms } from "@/auth/tenants";
 import { formatCurrency, formatDate } from "@/utils/format";
+
+const treatmentsTitle = pageTitle("treatments", "Tratamientos");
 import type { Appointment } from "@/types";
 
 type ViewMode = "table" | "cards" | "calendar";
@@ -45,8 +48,8 @@ export function TreatmentsPage() {
 
   const columns = [
     { key: "date", header: "Fecha", render: (a: Appointment) => formatDate(a.date) },
-    { key: "patient", header: "Paciente", render: (a: Appointment) => getPatient(a.patientId)?.fullName ?? "—" },
-    { key: "treatment", header: "Tratamiento", render: (a: Appointment) => getTreatment(a.treatmentId).name },
+    { key: "patient", header: terms.patient, render: (a: Appointment) => getPatient(a.patientId)?.fullName ?? "—" },
+    { key: "treatment", header: terms.treatment, render: (a: Appointment) => getTreatment(a.treatmentId).name },
     { key: "category", header: "Categoría", render: (a: Appointment) => getCategory(getTreatment(a.treatmentId).categoryId).name },
     { key: "primary", header: "Principal", render: (a: Appointment) => getDoctor(a.primaryDoctorId)?.fullName?.replace("Dra. ", "") ?? "—" },
     { key: "secondary", header: "Secundario", render: (a: Appointment) => getDoctor(a.secondaryDoctorId)?.fullName?.replace("Dra. ", "") ?? "—" },
@@ -60,7 +63,7 @@ export function TreatmentsPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Tratamientos"
+        title={treatmentsTitle}
         subtitle={`${filtered.length} registros`}
         actions={
           <>
@@ -81,13 +84,13 @@ export function TreatmentsPage() {
       />
 
       <FilterBar>
-        <SearchInput value={search} onChange={setSearch} placeholder="Buscar paciente…" />
+        <SearchInput value={search} onChange={setSearch} placeholder={`Buscar ${terms.patient.toLowerCase()}…`} />
         <Select value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Categoría" options={categories.map((c) => ({ value: c.id, label: c.name }))} />
         <Select value={status} onChange={(e) => setStatus(e.target.value)} placeholder="Estado" options={[
-          { value: "en_tratamiento", label: "En tratamiento" },
-          { value: "pendiente_pago", label: "Pendiente de pago" },
-          { value: "finalizado", label: "Finalizado" },
-          { value: "cancelado", label: "Cancelado" },
+          { value: "en_tratamiento", label: appointmentStatusLabels.en_tratamiento },
+          { value: "pendiente_pago", label: appointmentStatusLabels.pendiente_pago },
+          { value: "finalizado", label: appointmentStatusLabels.finalizado },
+          { value: "cancelado", label: appointmentStatusLabels.cancelado },
         ]} />
         <Select value={method} onChange={(e) => setMethod(e.target.value)} placeholder="Medio de pago" options={Object.entries(paymentMethodLabels).map(([v, l]) => ({ value: v, label: l }))} />
       </FilterBar>
@@ -144,7 +147,7 @@ export function TreatmentsPage() {
                   <span className={`font-semibold ${isToday ? "text-brand-700" : "text-ink-500"}`}>{day}</span>
                   {count > 0 && (
                     <span className="mt-1 block rounded bg-brand-100 px-1 py-0.5 text-[10px] font-bold text-brand-700">
-                      {count} turnos
+                      {count} {terms.appointments.toLowerCase()}
                     </span>
                   )}
                 </div>

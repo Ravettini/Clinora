@@ -3,9 +3,10 @@ import { appointments } from "./mockAppointments";
 import { getTreatment } from "./mockTreatments";
 import { getPatient } from "./mockPatients";
 import { inventoryItems } from "./mockInventory";
+import { content } from "./content";
 import { createRng, intBetween, pick } from "./seededRandom";
 
-const users = ["Recepción Palermo", "Recepción Belgrano", "Depósito"];
+const users = content.inventoryUsers;
 
 const finalized = appointments.filter((a) => a.status === "finalizado").slice(0, 50);
 

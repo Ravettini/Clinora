@@ -5,6 +5,7 @@ import { UserPlus } from "lucide-react";
 import { Modal } from "@/components/common/Modal";
 import { useApp } from "@/store/AppContext";
 import { useToast } from "@/store/ToastContext";
+import { terms } from "@/auth/tenants";
 import { calcAge } from "@/utils/format";
 
 const schema = z.object({
@@ -59,7 +60,7 @@ export function PatientFormModal({
       city: values.city ?? "",
       notes: values.notes,
     });
-    toast("success", "Nuevo paciente registrado correctamente", `${values.firstName} ${values.lastName}`);
+    toast("success", `Nuevo ${terms.patient.toLowerCase()} registrado correctamente`, `${values.firstName} ${values.lastName}`);
     reset();
     onClose();
   };
@@ -68,8 +69,8 @@ export function PatientFormModal({
     <Modal
       open={open}
       onClose={onClose}
-      title="Nuevo paciente"
-      subtitle="Completá los datos del paciente"
+      title={`Nuevo ${terms.patient.toLowerCase()}`}
+      subtitle={`Completá los datos del ${terms.patient.toLowerCase()}`}
       size="lg"
       footer={
         <div className="flex w-full justify-end gap-2">
@@ -77,7 +78,7 @@ export function PatientFormModal({
             Cancelar
           </button>
           <button className="btn-primary" onClick={handleSubmit(submit)}>
-            <UserPlus className="h-4 w-4" /> Registrar paciente
+            <UserPlus className="h-4 w-4" /> Registrar {terms.patient.toLowerCase()}
           </button>
         </div>
       }

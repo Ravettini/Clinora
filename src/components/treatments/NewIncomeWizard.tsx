@@ -22,14 +22,18 @@ import { primaryDoctors, secondaryDoctors, getDoctor } from "@/data/mockDoctors"
 import { findCommissionRule } from "@/data/mockCommissions";
 import { findPatientByDni } from "@/data/mockPatients";
 import { resolveCommission } from "@/utils/calculations";
+import { appointmentStatusLabels } from "@/utils/labels";
+import { terms, tenant } from "@/auth/tenants";
 import { calcAge, formatCurrency } from "@/utils/format";
 import { cn } from "@/utils/cn";
 import type { Patient, TreatmentCategoryId } from "@/types";
 
+const isLibreriaWizard = tenant.id === "libreria";
+
 const steps = [
-  { id: 1, label: "Paciente", icon: Search },
-  { id: 2, label: "Tratamiento", icon: Sparkles },
-  { id: 3, label: "Profesionales", icon: Stethoscope },
+  { id: 1, label: terms.patient, icon: Search },
+  { id: 2, label: terms.treatment, icon: Sparkles },
+  { id: 3, label: terms.professionals, icon: Stethoscope },
   { id: 4, label: "Confirmación", icon: ClipboardCheck },
 ];
 
@@ -103,11 +107,11 @@ export function NewIncomeWizard() {
     if (found) {
       setPatient(found);
       setShowQuick(false);
-      toast("success", "Paciente encontrado", found.fullName);
+      toast("success", `${terms.patient} encontrado`, found.fullName);
     } else {
       setPatient(null);
       setShowQuick(true);
-      toast("info", "Paciente no encontrado", "Podés registrarlo rápidamente.");
+      toast("info", `${terms.patient} no encontrado`, "Podés registrarlo rápidamente.");
     }
   };
 
@@ -128,7 +132,7 @@ export function NewIncomeWizard() {
     });
     setPatient(p);
     setShowQuick(false);
-    toast("success", "Nuevo paciente registrado correctamente", p.fullName);
+    toast("success", `Nuevo ${terms.patient.toLowerCase()} registrado correctamente`, p.fullName);
   };
 
   const canNext =
@@ -149,7 +153,7 @@ export function NewIncomeWizard() {
       commission,
       time,
     });
-    toast("success", "Tratamiento iniciado", `${patient.fullName} · ${treatment.name}`);
+    toast("success", isLibreriaWizard ? "Preparación iniciada" : "Tratamiento iniciado", `${patient.fullName} · ${treatment.name}`);
     closeNewIncome();
   };
 
@@ -158,7 +162,7 @@ export function NewIncomeWizard() {
       open={newIncomeOpen}
       onClose={closeNewIncome}
       title="Nuevo ingreso"
-      subtitle="Registrá un paciente, tratamiento y profesionales"
+      subtitle={`Registrá un ${terms.patient.toLowerCase()}, ${terms.treatment.toLowerCase()} y ${terms.professionals.toLowerCase()}`}
       size="lg"
       footer={
         <div className="flex w-full items-center justify-between">
@@ -231,7 +235,7 @@ export function NewIncomeWizard() {
       {step === 1 && (
         <div className="space-y-4">
           <div>
-            <label className="label">DNI del paciente</label>
+            <label className="label">DNI del {terms.patient.toLowerCase()}</label>
             <div className="flex gap-2">
               <input
                 value={dni}
@@ -306,7 +310,7 @@ export function NewIncomeWizard() {
                 />
               </div>
               <button className="btn-primary mt-3" onClick={registerQuick}>
-                <UserPlus className="h-4 w-4" /> Registrar paciente
+                <UserPlus className="h-4 w-4" /> Registrar {terms.patient.toLowerCase()}
               </button>
             </div>
           )}
@@ -342,7 +346,7 @@ export function NewIncomeWizard() {
           </div>
 
           <div>
-            <label className="label">Tratamiento</label>
+            <label className="label">{terms.treatment}</label>
             <div className="grid gap-2 sm:grid-cols-2">
               {categoryTreatments.map((t) => (
                 <button
@@ -404,7 +408,7 @@ export function NewIncomeWizard() {
                   className="input min-h-[60px] resize-none"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Notas del tratamiento (opcional)"
+                  placeholder={`Notas del ${terms.treatment.toLowerCase()} (opcional)`}
                 />
               </div>
             </div>
@@ -416,7 +420,7 @@ export function NewIncomeWizard() {
       {step === 3 && (
         <div className="space-y-4">
           <div>
-            <label className="label">Profesional principal</label>
+            <label className="label">{terms.professional} principal</label>
             <div className="grid gap-2 sm:grid-cols-2">
               {primaryDoctors.map((d) => (
                 <button
@@ -446,7 +450,7 @@ export function NewIncomeWizard() {
           </div>
 
           <div>
-            <label className="label">Profesional secundario</label>
+            <label className="label">{terms.professional} secundario</label>
             <div className="grid gap-2 sm:grid-cols-2">
               <button
                 onClick={() => setSecondaryId("")}
@@ -457,7 +461,7 @@ export function NewIncomeWizard() {
                     : "border-ink-900/10 bg-white text-ink-500 hover:border-brand-200",
                 )}
               >
-                Sin profesional secundario
+                Sin {terms.professional.toLowerCase()} secundario
               </button>
               {secondaryDoctors
                 .filter((d) => d.id !== primaryId)
@@ -531,13 +535,13 @@ export function NewIncomeWizard() {
               Resumen del ingreso
             </p>
             <div className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              <Summary label="Paciente" value={patient.fullName} />
+              <Summary label={terms.patient} value={patient.fullName} />
               <Summary label="DNI" value={patient.dni} />
-              <Summary label="Tratamiento" value={treatment.name} />
+              <Summary label={terms.treatment} value={treatment.name} />
               <Summary label="Categoría" value={getCategory(treatment.categoryId).name} />
-              <Summary label="Profesional principal" value={getDoctor(primaryId)?.fullName ?? "—"} />
+              <Summary label={`${terms.professional} principal`} value={getDoctor(primaryId)?.fullName ?? "—"} />
               <Summary
-                label="Profesional secundario"
+                label={`${terms.professional} secundario`}
                 value={secondaryId ? getDoctor(secondaryId)?.fullName ?? "—" : "Sin secundario"}
               />
               <Summary label="Duración estimada" value={`${treatment.durationMin} min`} />
@@ -556,7 +560,7 @@ export function NewIncomeWizard() {
             </div>
           </div>
           <p className="text-center text-xs text-ink-400">
-            Al confirmar, el tratamiento se agregará a la agenda con estado “En tratamiento”.
+            Al confirmar, {isLibreriaWizard ? "la venta" : "el tratamiento"} se agregará a la agenda con estado “{appointmentStatusLabels.en_tratamiento}”.
           </p>
         </div>
       )}

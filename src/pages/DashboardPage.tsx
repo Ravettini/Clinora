@@ -29,6 +29,7 @@ import {
 } from "@/components/charts";
 import { dashboardData } from "@/data/mockDashboard";
 import { primaryDoctors } from "@/data/mockDoctors";
+import { terms } from "@/auth/tenants";
 import { formatCurrency, formatNumber, formatPercent } from "@/utils/format";
 import { useUI } from "@/store/UIContext";
 import { cn } from "@/utils/cn";
@@ -112,7 +113,7 @@ export function DashboardPage() {
           <Select
             value={doctor}
             onChange={(e) => setDoctor(e.target.value)}
-            placeholder="Todos los profesionales"
+            placeholder={`Todos los ${terms.professionals.toLowerCase()}`}
             options={primaryDoctors.map((p) => ({ value: p.id, label: p.fullName }))}
           />
         </div>
@@ -150,9 +151,9 @@ export function DashboardPage() {
           <MetricCard label="Facturación del mes" value={formatCurrency(d.kpis.revenueMonth)} icon={DollarSign} delta={d.deltas.revenue} accent="brand" />
           <MetricCard label="Facturación ARS" value={formatCurrency(d.kpis.revenueArs)} icon={Banknote} delta={d.deltas.revenue} accent="brand" />
           <MetricCard label="Equivalente USD" value={`USD ${formatNumber(d.kpis.revenueUsd)}`} icon={DollarSign} deltaLabel="al tipo de cambio demo" delta={0} accent="positive" />
-          <MetricCard label="Tratamientos" value={formatNumber(d.kpis.treatments)} icon={Activity} delta={d.deltas.treatments} accent="brand" />
+          <MetricCard label={terms.sales} value={formatNumber(d.kpis.treatments)} icon={Activity} delta={d.deltas.treatments} accent="brand" />
           <MetricCard label="Ticket promedio" value={formatCurrency(d.kpis.avgTicket)} icon={Receipt} delta={d.deltas.avgTicket} accent="brand" />
-          <MetricCard label="Pacientes atendidos" value={formatNumber(d.kpis.patientsServed)} icon={Users} deltaLabel={`+${d.deltas.patients} pacientes`} delta={d.deltas.patients} accent="positive" />
+          <MetricCard label={`${terms.patients} atendidos`} value={formatNumber(d.kpis.patientsServed)} icon={Users} deltaLabel={`+${d.deltas.patients} ${terms.patients.toLowerCase()}`} delta={d.deltas.patients} accent="positive" />
           <MetricCard label="Edad promedio" value={`${d.kpis.avgAge} años`} icon={CalendarHeart} delta={d.deltas.avgAge} accent="neutral" />
           <MetricCard label="Comisiones pendientes" value={formatCurrency(d.kpis.pendingCommissions)} icon={HandCoins} delta={d.deltas.commissions} accent="warning" />
           <MetricCard label="Total de egresos" value={formatCurrency(d.kpis.totalExpenses)} icon={TrendingDown} delta={d.deltas.expenses} accent="danger" />
@@ -180,7 +181,7 @@ export function DashboardPage() {
 
       {/* Charts row 2 */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <ChartCard title="Cantidad de tratamientos por mes">
+        <ChartCard title={`Cantidad de ${terms.sales.toLowerCase()} por mes`}>
           {loading ? (
             <Skeleton className="h-[260px] w-full" />
           ) : (
@@ -200,7 +201,7 @@ export function DashboardPage() {
 
       {/* Charts row 3 */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <ChartCard title="Facturación por profesional principal">
+        <ChartCard title={`Facturación por ${terms.professional.toLowerCase()} principal`}>
           {loading ? (
             <Skeleton className="h-[280px] w-full" />
           ) : (
@@ -212,7 +213,7 @@ export function DashboardPage() {
             />
           )}
         </ChartCard>
-        <ChartCard title="Facturación de profesionales secundarios" subtitle="Por destino del cobro">
+        <ChartCard title={`Facturación de ${terms.professionals.toLowerCase()} secundarios`} subtitle="Por destino del cobro">
           {loading ? (
             <Skeleton className="h-[280px] w-full" />
           ) : (
@@ -240,7 +241,7 @@ export function DashboardPage() {
           )}
         </ChartCard>
 
-        <div className="card p-5">
+        <div className="card min-w-0 p-5">
           <h3 className="mb-4 font-semibold text-ink-900">Actividad reciente</h3>
           {loading ? (
             <div className="space-y-3">

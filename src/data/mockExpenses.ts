@@ -1,37 +1,11 @@
 import type { Expense, ExpenseCategory, PaymentMethodType, BranchId } from "@/types";
 import { DEMO_FX_RATE } from "@/utils/format";
 import { suppliers } from "./mockSuppliers";
+import { content } from "./content";
 import { createRng, intBetween, pick, chance } from "./seededRandom";
 
-const categoryConcepts: Record<ExpenseCategory, string[]> = {
-  salarios: ["Sueldos recepción", "Sueldo administración", "Sueldo limpieza"],
-  honorarios_medicos: ["Honorarios profesionales", "Honorarios guardia estética"],
-  gastos_administrativos: ["Insumos de oficina", "Sistema de gestión", "Contador"],
-  impuestos: ["IIBB", "Monotributo asociadas", "Tasa municipal"],
-  intereses: ["Intereses tarjeta", "Gastos bancarios"],
-  marketing: ["Campaña Instagram", "Fotografía profesional", "Diseño gráfico"],
-  comercializacion: ["Comisiones plataformas", "Promociones gift card"],
-  servicios: ["Luz", "Internet", "Agua", "Telefonía"],
-  alquiler: ["Alquiler local", "Expensas"],
-  mercaderia: ["Compra de insumos", "Reposición dermocosmética", "Toxina botulínica"],
-  mantenimiento: ["Service aparatología", "Mantenimiento aire acondicionado"],
-  otros: ["Gastos varios", "Caja chica"],
-};
-
-const categoryAmounts: Record<ExpenseCategory, [number, number]> = {
-  salarios: [450000, 900000],
-  honorarios_medicos: [600000, 2200000],
-  gastos_administrativos: [80000, 350000],
-  impuestos: [200000, 850000],
-  intereses: [30000, 180000],
-  marketing: [150000, 600000],
-  comercializacion: [80000, 400000],
-  servicios: [60000, 280000],
-  alquiler: [950000, 1400000],
-  mercaderia: [300000, 1800000],
-  mantenimiento: [50000, 320000],
-  otros: [20000, 150000],
-};
+const categoryConcepts = content.expenseConcepts;
+const categoryAmounts = content.expenseAmounts;
 
 const allCategories = Object.keys(categoryConcepts) as ExpenseCategory[];
 const methods: PaymentMethodType[] = [

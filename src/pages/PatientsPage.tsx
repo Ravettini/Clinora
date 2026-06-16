@@ -10,8 +10,11 @@ import { useApp } from "@/store/AppContext";
 import { useUI } from "@/store/UIContext";
 import { getPatientStats } from "@/data/patientStats";
 import { primaryDoctors } from "@/data/mockDoctors";
+import { pageTitle, terms } from "@/auth/tenants";
 import { calcAge, formatCurrency, formatDate } from "@/utils/format";
 import type { Patient } from "@/types";
+
+const patientsTitle = pageTitle("patients", "Pacientes");
 
 export function PatientsPage() {
   const { patients, appointments } = useApp();
@@ -41,14 +44,14 @@ export function PatientsPage() {
 
   const columns = [
     { key: "dni", header: "DNI", render: (p: Patient) => <span className="font-mono text-xs">{p.dni}</span> },
-    { key: "name", header: "Paciente", render: (p: Patient) => <span className="font-semibold text-ink-900">{p.fullName}</span> },
+    { key: "name", header: terms.patient, render: (p: Patient) => <span className="font-semibold text-ink-900">{p.fullName}</span> },
     { key: "age", header: "Edad", render: (p: Patient) => `${calcAge(p.birthDate)} años` },
     { key: "phone", header: "Teléfono", render: (p: Patient) => <span className="text-xs">{p.phone}</span> },
     { key: "email", header: "Mail", render: (p: Patient) => <span className="text-xs text-ink-400">{p.email || "—"}</span> },
     { key: "lastVisit", header: "Última visita", render: (p: Patient) => p.lastVisit ? formatDate(p.lastVisit) : "—" },
     {
       key: "treatments",
-      header: "Tratamientos",
+      header: terms.treatments,
       align: "center" as const,
       render: (p: Patient) => getPatientStats(p.id, appointments).treatmentsCount,
     },
@@ -88,15 +91,15 @@ export function PatientsPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Pacientes"
-        subtitle={`${patients.length} pacientes registrados`}
+        title={patientsTitle}
+        subtitle={`${patients.length} ${patientsTitle.toLowerCase()} registrados`}
         actions={
           <>
             <button className="btn-secondary" onClick={() => openNewIncome()}>
               <Plus className="h-4 w-4" /> Nuevo ingreso
             </button>
             <button className="btn-primary" onClick={() => setFormOpen(true)}>
-              <UserPlus className="h-4 w-4" /> Nuevo paciente
+              <UserPlus className="h-4 w-4" /> Nuevo {terms.patient.toLowerCase()}
             </button>
           </>
         }
@@ -127,7 +130,7 @@ export function PatientsPage() {
         <Select
           value={doctorFilter}
           onChange={(e) => setDoctorFilter(e.target.value)}
-          placeholder="Profesional"
+          placeholder={terms.professional}
           options={primaryDoctors.map((d) => ({ value: d.id, label: d.fullName }))}
         />
       </FilterBar>
@@ -151,7 +154,7 @@ export function PatientsPage() {
                 </Badge>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-ink-500">
-                <span>{stats.treatmentsCount} tratamientos</span>
+                <span>{stats.treatmentsCount} {terms.treatments.toLowerCase()}</span>
                 <span className="text-right font-semibold text-ink-900">{formatCurrency(stats.totalSpent)}</span>
               </div>
             </div>

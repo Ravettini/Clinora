@@ -9,6 +9,7 @@ import { useApp } from "@/store/AppContext";
 import { useToast } from "@/store/ToastContext";
 import { cashMovements } from "@/data/mockCashMovements";
 import { paymentMethodLabels } from "@/utils/labels";
+import { terms } from "@/auth/tenants";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
 import type { CashMovement } from "@/types";
 
@@ -95,7 +96,7 @@ export function CashPage() {
         <DataTable
           columns={[
             { key: "date", header: "Fecha", render: (a) => formatDate(a.date) },
-            { key: "patient", header: "Paciente", render: (a) => a.patientId },
+            { key: "patient", header: terms.patient, render: (a) => a.patientId },
             { key: "price", header: "Importe", align: "right", render: (a) => formatCurrency(a.price) },
           ]}
           data={pending}

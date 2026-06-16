@@ -5,6 +5,7 @@ import type {
   MovementType,
   InventoryStatus,
 } from "@/types";
+import { tenant } from "@/auth/tenants";
 
 export const paymentMethodLabels: Record<PaymentMethodType, string> = {
   transferencia_profesional: "Transferencia a profesional",
@@ -12,6 +13,7 @@ export const paymentMethodLabels: Record<PaymentMethodType, string> = {
   tarjeta: "Tarjeta",
   efectivo_ars: "Efectivo ARS",
   efectivo_usd: "Efectivo USD",
+  ...tenant.paymentMethodLabels,
 };
 
 export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
@@ -22,6 +24,7 @@ export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
   pendiente_pago: "Pendiente de pago",
   finalizado: "Finalizado",
   cancelado: "Cancelado",
+  ...tenant.appointmentStatusLabels,
 };
 
 export const expenseCategoryLabels: Record<ExpenseCategory, string> = {
@@ -37,6 +40,7 @@ export const expenseCategoryLabels: Record<ExpenseCategory, string> = {
   mercaderia: "Mercadería",
   mantenimiento: "Mantenimiento",
   otros: "Otros",
+  ...tenant.expenseCategoryLabels,
 };
 
 export const movementTypeLabels: Record<MovementType, string> = {

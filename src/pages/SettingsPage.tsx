@@ -9,14 +9,21 @@ import { treatments } from "@/data/mockTreatments";
 import { categories } from "@/data/mockCategories";
 import { commissionRules } from "@/data/mockCommissions";
 import { paymentMethodLabels } from "@/utils/labels";
+import { terms, tenant } from "@/auth/tenants";
 import { formatCurrency } from "@/utils/format";
 import { cn } from "@/utils/cn";
 
+const isLibreria = tenant.id === "libreria";
+const businessLabel = isLibreria ? "Datos del negocio" : "Datos de la clínica";
+const businessSubtitle = isLibreria
+  ? "Parámetros generales del negocio"
+  : "Parámetros generales de la clínica";
+
 const sections = [
-  { id: "clinica", label: "Datos de la clínica", icon: Building2 },
+  { id: "clinica", label: businessLabel, icon: Building2 },
   { id: "sucursales", label: "Sucursales", icon: Building2 },
-  { id: "profesionales", label: "Profesionales", icon: Users },
-  { id: "tratamientos", label: "Tratamientos", icon: Sparkles },
+  { id: "profesionales", label: terms.professionals, icon: Users },
+  { id: "tratamientos", label: terms.treatments, icon: Sparkles },
   { id: "comisiones", label: "Comisiones", icon: Percent },
   { id: "cambio", label: "Tipo de cambio", icon: DollarSign },
   { id: "notificaciones", label: "Notificaciones", icon: Bell },
@@ -38,7 +45,7 @@ export function SettingsPage() {
     <div className="space-y-5">
       <PageHeader
         title="Configuración"
-        subtitle="Parámetros generales de la clínica"
+        subtitle={businessSubtitle}
         actions={
           <button className="btn-primary" onClick={save}>
             <Save className="h-4 w-4" /> Guardar cambios
@@ -70,12 +77,12 @@ export function SettingsPage() {
         <div className="card p-5 lg:col-span-3">
           {tab === "clinica" && (
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Nombre comercial" defaultValue="CLINORA" />
-              <Field label="Razón social (ficticia)" defaultValue="Clinora Estética SRL" />
-              <Field label="CUIT (ficticio)" defaultValue="30-71234567-8" />
-              <Field label="Email" defaultValue="contacto@clinora.demo" />
-              <Field label="Teléfono" defaultValue="+54 11 4555-0100" />
-              <Field label="Sitio web" defaultValue="www.clinora.demo" />
+              <Field label="Nombre comercial" defaultValue={tenant.brand.name} />
+              <Field label="Razón social (ficticia)" defaultValue={isLibreria ? "Papelera Central SRL" : "Clinora Estética SRL"} />
+              <Field label="CUIT (ficticio)" defaultValue={isLibreria ? "30-71987654-3" : "30-71234567-8"} />
+              <Field label="Email" defaultValue={isLibreria ? "contacto@papelera.demo" : "contacto@clinora.demo"} />
+              <Field label="Teléfono" defaultValue={isLibreria ? "+54 11 4300-0100" : "+54 11 4555-0100"} />
+              <Field label="Sitio web" defaultValue={isLibreria ? "www.papelera.demo" : "www.clinora.demo"} />
             </div>
           )}
 
@@ -121,7 +128,7 @@ export function SettingsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-xs uppercase text-ink-400">
-                    <th className="pb-2">Tratamiento</th>
+                    <th className="pb-2">{terms.treatment}</th>
                     <th className="pb-2">Categoría</th>
                     <th className="pb-2 text-right">Precio</th>
                     <th className="pb-2 text-right">Duración</th>
@@ -146,8 +153,8 @@ export function SettingsPage() {
               <table className="w-full min-w-[700px] text-sm">
                 <thead>
                   <tr className="text-left text-xs uppercase text-ink-400">
-                    <th className="pb-2">Profesional</th>
-                    <th className="pb-2">Tratamiento</th>
+                    <th className="pb-2">{terms.professional}</th>
+                    <th className="pb-2">{terms.treatment}</th>
                     <th className="pb-2">Tipo</th>
                     <th className="pb-2 text-right">Valor</th>
                   </tr>
@@ -209,10 +216,10 @@ export function SettingsPage() {
             <div className="space-y-4">
               {[
                 "Alertas de stock crítico",
-                "Pagos pendientes de pacientes",
+                `Pagos pendientes de ${terms.patients.toLowerCase()}`,
                 "Liquidaciones quincenales",
                 "Resumen diario de caja",
-                "Nuevos pacientes registrados",
+                `Nuevos ${terms.patients.toLowerCase()} registrados`,
               ].map((n) => (
                 <label key={n} className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3">
                   <span className="text-sm font-medium text-ink-700">{n}</span>

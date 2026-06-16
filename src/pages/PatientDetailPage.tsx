@@ -22,11 +22,12 @@ import { getTreatment } from "@/data/mockTreatments";
 import { getDoctor } from "@/data/mockDoctors";
 import { getCategory } from "@/data/mockCategories";
 import { paymentMethodLabels } from "@/utils/labels";
+import { terms, tenant } from "@/auth/tenants";
 import { calcAge, formatCurrency, formatDate } from "@/utils/format";
 
 const tabs = [
   { id: "resumen", label: "Resumen" },
-  { id: "tratamientos", label: "Tratamientos" },
+  { id: "tratamientos", label: terms.treatments },
   { id: "pagos", label: "Pagos" },
   { id: "documentacion", label: "Documentación" },
   { id: "observaciones", label: "Observaciones" },
@@ -48,9 +49,9 @@ export function PatientDetailPage() {
   if (!patient || !stats) {
     return (
       <div className="text-center py-20">
-        <p className="text-ink-500">Paciente no encontrado.</p>
+        <p className="text-ink-500">{terms.patient} no encontrado.</p>
         <Link to="/pacientes" className="btn-primary mt-4 inline-flex">
-          Volver a pacientes
+          Volver a {terms.patients.toLowerCase()}
         </Link>
       </div>
     );
@@ -70,7 +71,7 @@ export function PatientDetailPage() {
   return (
     <div className="space-y-5">
       <Link to="/pacientes" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 hover:text-brand-700">
-        <ArrowLeft className="h-4 w-4" /> Volver a pacientes
+        <ArrowLeft className="h-4 w-4" /> Volver a {terms.patients.toLowerCase()}
       </Link>
 
       <div className="card overflow-hidden">
@@ -103,10 +104,10 @@ export function PatientDetailPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-px bg-ink-900/5 sm:grid-cols-4">
-          <MiniStat label="Tratamientos" value={String(stats.treatmentsCount)} />
+          <MiniStat label={terms.treatments} value={String(stats.treatmentsCount)} />
           <MiniStat label="Total gastado" value={formatCurrency(stats.totalSpent)} />
           <MiniStat label="Ticket promedio" value={formatCurrency(stats.avgTicket)} />
-          <MiniStat label="Profesional habitual" value={stats.usualDoctorName?.replace("Dra. ", "") ?? "—"} />
+          <MiniStat label={`${terms.professional} habitual`} value={stats.usualDoctorName?.replace("Dra. ", "") ?? "—"} />
         </div>
       </div>
 
@@ -157,8 +158,8 @@ export function PatientDetailPage() {
         <DataTable
           columns={[
             { key: "date", header: "Fecha", render: (a) => formatDate(a.date) },
-            { key: "treatment", header: "Tratamiento", render: (a) => getTreatment(a.treatmentId).name },
-            { key: "doctor", header: "Profesional", render: (a) => getDoctor(a.primaryDoctorId)?.fullName ?? "—" },
+            { key: "treatment", header: terms.treatment, render: (a) => getTreatment(a.treatmentId).name },
+            { key: "doctor", header: terms.professional, render: (a) => getDoctor(a.primaryDoctorId)?.fullName ?? "—" },
             { key: "price", header: "Monto", align: "right", render: (a) => formatCurrency(a.price) },
             { key: "status", header: "Estado", render: (a) => <AppointmentStatusBadge status={a.status} /> },
           ]}
@@ -191,11 +192,16 @@ export function PatientDetailPage() {
             <div>
               <p className="font-semibold text-ink-700">Documentación demostrativa</p>
               <p className="mx-auto mt-1 max-w-md text-sm text-ink-400">
-                En la versión productiva podrás cargar consentimientos, estudios y fotografías clínicas.
+                {tenant.id === "libreria"
+                  ? "En la versión productiva podrás cargar presupuestos, remitos y comprobantes del cliente."
+                  : "En la versión productiva podrás cargar consentimientos, estudios y fotografías clínicas."}
               </p>
             </div>
             <div className="grid w-full max-w-lg gap-2 sm:grid-cols-2">
-              {["Consentimiento informado.pdf", "Fotografía pre-tratamiento.jpg", "Historia clínica resumen.pdf"].map((f) => (
+              {(tenant.id === "libreria"
+                ? ["Presupuesto mayorista.pdf", "Remito de entrega.pdf", "Cuenta corriente resumen.pdf"]
+                : ["Consentimiento informado.pdf", "Fotografía pre-tratamiento.jpg", "Historia clínica resumen.pdf"]
+              ).map((f) => (
                 <div key={f} className="flex items-center gap-2 rounded-xl border border-ink-900/10 bg-surface-muted px-3 py-2.5 text-sm text-ink-600">
                   <FileText className="h-4 w-4 text-brand-500" />
                   {f}
@@ -213,7 +219,7 @@ export function PatientDetailPage() {
             <div>
               <h3 className="font-semibold text-ink-900">Observaciones</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600">
-                {patient.notes ?? "Sin observaciones registradas para este paciente."}
+                {patient.notes ?? `Sin observaciones registradas para este ${terms.patient.toLowerCase()}.`}
               </p>
               <p className="mt-4 text-xs text-ink-400">
                 Las notas son editables en memoria en la versión productiva.

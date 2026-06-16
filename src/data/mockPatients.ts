@@ -1,26 +1,9 @@
 import type { Patient, BranchId } from "@/types";
 import { createRng, intBetween, pick, chance } from "./seededRandom";
+import { content } from "./content";
 
-const firstNames = [
-  "Sofía", "Martina", "Lucía", "Carolina", "Victoria", "Julieta", "Agustina", "Pilar",
-  "Valentina", "Camila", "Florencia", "Catalina", "Renata", "Delfina", "Emilia", "Josefina",
-  "Bianca", "Mora", "Abril", "Olivia", "Guadalupe", "Malena", "Antonella", "Brisa",
-  "Paloma", "Regina", "Isabella", "Manuela", "Zoe", "Constanza", "Magdalena", "Ámbar",
-  "Clara", "Juana", "Trinidad", "Carla", "Daniela", "Romina", "Natalia", "Gabriela",
-];
-
-const lastNames = [
-  "Benítez", "López", "Fernández", "Suárez", "Molina", "Acosta", "Romero", "García",
-  "Sosa", "Ramírez", "Herrera", "Giménez", "Castro", "Ortiz", "Silva", "Núñez",
-  "Rojas", "Medina", "Vega", "Ríos", "Cabrera", "Ferreyra", "Domínguez", "Aguirre",
-  "Méndez", "Cardozo", "Peralta", "Vera", "Ledesma", "Quiroga", "Ibáñez", "Paz",
-  "Bravo", "Campos", "Maldonado", "Figueroa", "Correa", "Luna", "Pereyra", "Villalba",
-];
-
-const cities = ["Palermo", "Belgrano", "Caballito", "Recoleta", "Núñez", "Villa Crespo", "Colegiales", "Almagro"];
-const streets = ["Av. Libertador", "Thames", "Gurruchaga", "Cabildo", "Av. Corrientes", "Honduras", "Malabia", "Av. Cabildo"];
-
-const doctorIds = ["doc-1", "doc-2", "doc-3", "doc-4", "doc-7", "doc-8"];
+const { firstNames, lastNames, cities, streets, note: patientNote, doctorIds } =
+  content.patient;
 
 function isoDaysAgo(days: number): string {
   const d = new Date(2026, 5, 11);
@@ -52,7 +35,7 @@ export const patients: Patient[] = Array.from({ length: 40 }, (_, i) => {
     email: `${firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${lastName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}@mail.demo`,
     address: `${pick(rng, streets)} ${intBetween(rng, 100, 4900)}`,
     city: pick(rng, cities),
-    notes: chance(rng, 0.3) ? "Paciente con seguimiento estético periódico." : undefined,
+    notes: chance(rng, 0.3) ? patientNote : undefined,
     status: isNew ? "nuevo" : lastVisitDays > 120 ? "inactivo" : "activo",
     createdAt: isoDaysAgo(intBetween(rng, 30, 900)),
     lastVisit: isNew ? undefined : isoDaysAgo(lastVisitDays),

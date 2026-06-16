@@ -15,6 +15,7 @@ import { Select } from "@/components/common/Controls";
 import { EbitdaLineChart, DonutChart, SimpleBarChart } from "@/components/charts";
 import { dashboardData } from "@/data/mockDashboard";
 import { pnlRows } from "@/data/mockPnL";
+import { terms } from "@/auth/tenants";
 import { downloadCsv } from "@/utils/csv";
 import { useToast } from "@/store/ToastContext";
 import { formatCurrency, formatPercent } from "@/utils/format";
@@ -24,10 +25,10 @@ import { cn } from "@/utils/cn";
 const reportCards = [
   { id: "ventas", title: "Ventas por período", icon: BarChart3 },
   { id: "categoria", title: "Facturación por categoría", icon: PieChart },
-  { id: "profesional", title: "Facturación por profesional", icon: Users },
-  { id: "comisiones", title: "Comisiones médicas", icon: Wallet },
+  { id: "profesional", title: `Facturación por ${terms.professional.toLowerCase()}`, icon: Users },
+  { id: "comisiones", title: terms.medicalFees, icon: Wallet },
   { id: "ticket", title: "Ticket promedio", icon: TrendingUp },
-  { id: "edad", title: "Pacientes por edad", icon: Users },
+  { id: "edad", title: `${terms.patients} por edad`, icon: Users },
   { id: "medios", title: "Medios de pago", icon: Wallet },
   { id: "egresos", title: "Egresos", icon: BarChart3 },
   { id: "ebitda", title: "EBITDA y P&L", icon: LineChart },
@@ -121,7 +122,7 @@ export function ReportsPage() {
                 {([
                   ["Ventas", "sales"],
                   ["Costo de mercadería", "cogs"],
-                  ["Honorarios médicos", "medicalFees"],
+                  [terms.medicalFees, "medicalFees"],
                   ["Margen bruto", "grossMargin"],
                   ["Salarios", "salaries"],
                   ["Gastos administrativos", "admin"],
@@ -182,7 +183,7 @@ export function ReportsPage() {
             <div className="mt-4 space-y-3">
               <Kpi label="Facturación del período" value={formatCurrency(d.kpis.revenueMonth)} />
               <Kpi label="Ticket promedio" value={formatCurrency(d.kpis.avgTicket)} />
-              <Kpi label="Pacientes atendidos" value={String(d.kpis.patientsServed)} />
+              <Kpi label={`${terms.patients} atendidos`} value={String(d.kpis.patientsServed)} />
             </div>
             <button className="btn-outline mt-5 w-full" onClick={exportReport}>
               <Download className="h-4 w-4" /> Exportar CSV

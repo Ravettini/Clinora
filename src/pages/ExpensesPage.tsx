@@ -9,6 +9,7 @@ import { Badge } from "@/components/common/StatusBadge";
 import { useToast } from "@/store/ToastContext";
 import { expenses, expensesThisMonth } from "@/data/mockExpenses";
 import { expenseCategoryLabels } from "@/utils/labels";
+import { terms, tenant } from "@/auth/tenants";
 import { formatCurrency, formatDate } from "@/utils/format";
 import type { Expense, ExpenseCategory } from "@/types";
 
@@ -49,7 +50,7 @@ export function ExpensesPage() {
         <MetricCard label="Egresos del mes" value={formatCurrency(monthTotal)} delta={variation} accent="danger" />
         <MetricCard label="Variación mensual" value={`${variation > 0 ? "+" : ""}${variation}%`} accent="warning" />
         <MetricCard label="Categoría principal" value={topCategory} accent="brand" />
-        <MetricCard label="Honorarios médicos" value={formatCurrency(expensesThisMonth.filter((e) => e.category === "honorarios_medicos").reduce((s, e) => s + e.amountArs, 0))} accent="neutral" />
+        <MetricCard label={terms.medicalFees} value={formatCurrency(expensesThisMonth.filter((e) => e.category === "honorarios_medicos").reduce((s, e) => s + e.amountArs, 0))} accent="neutral" />
       </div>
 
       <FilterBar>
@@ -126,7 +127,7 @@ export function ExpensesPage() {
                 <FileSearch className="h-4 w-4" /> Extracción ficticia detectada
               </p>
               <div className="mt-2 grid gap-1 text-sm text-ink-600 sm:grid-cols-2">
-                <p>Proveedor: Insumos Médicos del Sur</p>
+                <p>Proveedor: {tenant.id === "libreria" ? "Distribuidora Papelera SA" : "Insumos Médicos del Sur"}</p>
                 <p>Fecha: 12/06/2026</p>
                 <p>Total: $485.000</p>
                 <p>Ítems detectados: 3</p>

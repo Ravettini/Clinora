@@ -12,6 +12,7 @@ import {
   HelpCircle,
   type LucideIcon,
 } from "lucide-react";
+import { navLabel } from "@/auth/tenants";
 
 export interface NavItem {
   to: string;
@@ -21,15 +22,15 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { to: "/", label: "Inicio", icon: LayoutDashboard, end: true },
-  { to: "/agenda", label: "Agenda operativa", icon: CalendarDays },
-  { to: "/pacientes", label: "Pacientes", icon: Users },
-  { to: "/tratamientos", label: "Tratamientos", icon: Sparkles },
-  { to: "/caja", label: "Caja", icon: Wallet },
-  { to: "/liquidaciones", label: "Liquidaciones", icon: HandCoins },
-  { to: "/egresos", label: "Egresos", icon: Receipt },
-  { to: "/inventario", label: "Inventario", icon: Boxes },
-  { to: "/reportes", label: "Reportes", icon: BarChart3 },
-  { to: "/guia", label: "Guía de demo", icon: HelpCircle },
-  { to: "/configuracion", label: "Configuración", icon: Settings },
+  { to: "/", label: navLabel("/", "Inicio"), icon: LayoutDashboard, end: true },
+  { to: "/agenda", label: navLabel("/agenda", "Agenda operativa"), icon: CalendarDays },
+  { to: "/pacientes", label: navLabel("/pacientes", "Pacientes"), icon: Users },
+  { to: "/tratamientos", label: navLabel("/tratamientos", "Tratamientos"), icon: Sparkles },
+  { to: "/caja", label: navLabel("/caja", "Caja"), icon: Wallet },
+  { to: "/liquidaciones", label: navLabel("/liquidaciones", "Liquidaciones"), icon: HandCoins },
+  { to: "/egresos", label: navLabel("/egresos", "Egresos"), icon: Receipt },
+  { to: "/inventario", label: navLabel("/inventario", "Inventario"), icon: Boxes },
+  { to: "/reportes", label: navLabel("/reportes", "Reportes"), icon: BarChart3 },
+  { to: "/guia", label: navLabel("/guia", "Guía de demo"), icon: HelpCircle },
+  { to: "/configuracion", label: navLabel("/configuracion", "Configuración"), icon: Settings },
 ];
